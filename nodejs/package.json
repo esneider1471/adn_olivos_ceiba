@@ -1,0 +1,28 @@
+{
+  "name": "api-json-cli",
+  "version": "1.0.0",
+  "description": "CLI en TypeScript que consulta una API REST y guarda la respuesta en un archivo .json",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/main.js",
+    "fetch:posts": "node dist/main.js fetch --endpoint posts",
+    "fetch:users": "node dist/main.js fetch --endpoint users",
+    "fetch:comments": "node dist/main.js fetch --endpoint comments",
+    "fetch:todos": "node dist/main.js fetch --endpoint todos"
+  },
+  "keywords": [
+    "cli",
+    "typescript",
+    "api",
+    "json"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}

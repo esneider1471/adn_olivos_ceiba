@@ -1,0 +1,66 @@
+# Task Manager — stack completo en local (db + api + web)
+#
+#   docker compose up --build
+#
+#   - Web:  http://localhost:3001
+#   - API:  http://localhost:3000/api
+#
+# La web llama a la API en http://localhost:3000/api desde el NAVEGADOR,
+# no entre contenedores. Por eso la API debe estar expuesta en el host y
+# CORS debe permitir http://localhost:3001. El JWT_SECRET vive en el
+# .env de la API (no se quema en la imagen).
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: task-manager-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-taskmanager}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-taskmanager}
+      POSTGRES_DB: ${DB_DATABASE:-taskmanager}
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - taskmanager_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME:-taskmanager} -d ${DB_DATABASE:-taskmanager}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./nestjs
+    container_name: task-manager-api
+    env_file:
+      - ./nestjs/.env
+    environment:
+      # Dentro de la red, la BD vive en el servicio `db`, no en localhost.
+      DB_HOST: db
+      PORT: '3000'
+      # La web corre en http://localhost:3001 en el navegador.
+      CORS_ORIGIN: http://localhost:3001
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3000/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  web:
+    build:
+      context: ./reactNext
+    container_name: task-manager-web
+    ports:
+      - '3001:3001'
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  taskmanager_data:
