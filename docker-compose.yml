@@ -39,7 +39,8 @@ services:
       DB_HOST: db
       PORT: '3000'
       # La web corre en http://localhost:3001 en el navegador.
-      CORS_ORIGIN: http://localhost:3001
+      # La app móvil (Expo, `npm run web`) usa http://localhost:8081.
+      CORS_ORIGIN: http://localhost:3001,http://localhost:8081
     ports:
       - '3000:3000'
     depends_on:
