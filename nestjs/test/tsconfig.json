@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // Jest + ts-jest emiten CommonJS; nodenext causaría errores de
+    // interop con librerías CJS (p. ej. supertest) y avisos de ts-jest.
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "rootDir": "..",
+    "outDir": "./dist",
+    "incremental": false,
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
+  },
+  "include": ["./**/*", "../src/**/*"]
+}

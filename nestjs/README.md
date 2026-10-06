@@ -3,6 +3,9 @@
 REST API de un **Sistema de Gestión de Tareas** con autenticación JWT.
 Proyecto de prueba de concepto: CRUD completo + auth, PostgreSQL con TypeORM, arquitectura en capas.
 
+> Parte del proyecto **Task Manager** (Backend + Web + Mobile). Vuelve al
+> [README maestro](../README.md) para el diagrama de arquitectura y el quick start del stack completo.
+
 ## Stack
 
 - **NestJS 11** + TypeScript
@@ -41,6 +44,26 @@ npm run start:prod     # Corre la build de producción
 npm run db:down        # Apaga y detiene Postgres (conserva el volumen)
 npm run migration:run  # Aplica migraciones (requiere carpeta src/database/migrations)
 ```
+
+## Pruebas E2E
+
+La suite E2E (`test/e2e/`) cubre auth (registro, login, `/me`, validaciones,
+401/404/409) y el ciclo completo de tareas (CRUD, guardas JWT, validación de
+DTO, visibilidad entre usuarios) contra una **base de datos de pruebas dedicada**
+(`taskmanager_test`), sin tocar la BD de desarrollo.
+
+```bash
+# 1) Levantar Postgres (con el contenedor `task-manager-db`) y crear la BD de pruebas
+npm run db:up
+npm run db:test:prepare   # CREATE DATABASE taskmanager_test (idempotente si ya existe)
+
+# 2) Correr las suites
+npm run test:e2e          # 32 tests
+```
+
+> La BD de pruebas se crea una sola vez; `synchronize` levanta el esquema en
+> cada corrida y cada suite hace `TRUNCATE` al inicio, así que los tests son
+> repetibles sin estado residual.
 
 ## Variables de entorno
 

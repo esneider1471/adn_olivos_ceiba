@@ -3,6 +3,10 @@
 .vscode/ceiba.code-workspace
 .venv
 
+# Estado local de herramientas de agentes (no commitear)
+.claude/logs/
+.github/logs/
+
 # Método Ceiba - Auto-managed agent files
 .github/agents/metodo-ceiba-*.agent.md
 .claude/commands/metodo-ceiba-*.md

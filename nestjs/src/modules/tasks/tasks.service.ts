@@ -33,7 +33,11 @@ export class TasksService {
 
   async update(id: string, dto: UpdateTaskDto): Promise<Task> {
     const task = await this.findByIdOrThrow(id);
-    Object.assign(task, dto);
+    
+    const changes = Object.fromEntries(
+      Object.entries(dto).filter(([, value]) => value !== undefined),
+    );
+    Object.assign(task, changes);
     return this.tasksRepository.save(task);
   }
 

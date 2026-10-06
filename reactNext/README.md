@@ -3,6 +3,9 @@
 Dashboard del Task Manager. Consume la API REST de NestJS (proyecto `../nestjs`)
 con Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS v4.
 
+> Parte del proyecto **Task Manager** (Backend + Web + Mobile). Vuelve al
+> [README maestro](../README.md) para el diagrama de arquitectura y el quick start del stack completo.
+
 ## Estructura
 
 ```
@@ -58,3 +61,25 @@ El `JWT_SECRET` se lee del `.env` de la API (no se quema en la imagen).
 | Variable                | Default                       | Descripción                          |
 | ----------------------- | ----------------------------- | ------------------------------------ |
 | `NEXT_PUBLIC_API_URL`   | `http://localhost:3000/api`   | Base URL de la API (bundle del cliente) |
+
+## Pruebas E2E
+
+Suite **Playwright** (`tests/e2e/`) que recorre el flujo completo contra el
+stack real local: guardas de sesión, registro (incl. email duplicado), login
+(incl. credenciales inválidas), crear/toggle/editar/borrar tarea, logout,
+persistencia de la sesión tras recargar y redirección ante un token inválido.
+
+```bash
+# 1) Levantar la API (Playwright levanta la web solo en dev)
+docker compose up -d api   # desde la raíz del repo
+
+# 2) Correr las suites
+npm run test:e2e            # 11 tests
+```
+
+> **Conflicto de puerto 3001:** el contenedor Docker `task-manager-web` ya sirve
+> la web en ese puerto. Playwright usa `reuseExistingServer`, así que si el
+> contenedor está arriba se reutiliza (recomendado). Si quieres que Playwright
+> levante su propio `next dev`, detén el contenedor antes: `docker stop task-manager-web`.
+
+> **Primer uso:** instalar el navegador una sola vez con `npx playwright install chromium`.
